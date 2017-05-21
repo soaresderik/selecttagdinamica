@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Lista de Estados e Cidades Usando Jquery e JSON</title>
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script
+  src="https://code.jquery.com/jquery-3.2.1.js"
+  integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+  crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+<div class="col-sm-6">
+	<h2>Lista de Estados e Cidades Usando Jquery e JSON</h2>
+	<select class="form-control" id="Estado">
+		<option>Selecionar Estado</option>
+	</select>
+	<br>
+	<select class="form-control" id="Cidade">
+		<option>Selecionar Cidade</option>
+	</select>
+	
+</div>
+</div>
+
+</body>
+</html>
+
+<script>
+	$(document).ready(function(){
+		carregar_json('Estado');
+		function carregar_json(id, cidade_id){
+			var html = '';
+
+			$.getJSON('https://gist.githubusercontent.com/letanure/3012978/raw/36fc21d9e2fc45c078e0e0e07cce3c81965db8f9/estados-cidades.json', function(data){
+				html += '<option>Selecionar '+ id +'</option>';
+				console.log(data);
+				if(id == 'Estado' && cidade_id == null){
+					for(var i = 0; i < data.estados.length; i++){
+						html += '<option value='+ data.estados[i].sigla +'>'+ data.estados[i].nome+'</option>';
+					}
+				}else{
+					for(var i = 0; i < data.estados.length; i++){
+						if(data.estados[i].sigla == cidade_id){
+							for(var j = 0; j < data.estados[i].cidades.length; j++){
+								html += '<option value='+ data.estados[i].sigla +'>'+data.estados[i].cidades[j]+ '</option>';
+							}
+						}
+					}
+				}
+
+				$('#'+id).html(html);
+			});
+			
+		}
+
+		$(document).on('change', '#Estado', function(){
+			var cidade_id = $(this).val();
+			console.log(cidade_id);
+			if(cidade_id != null){
+				carregar_json('Cidade', cidade_id);
+			}
+		});
+
+	});
+</script>
